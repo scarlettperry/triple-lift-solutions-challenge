@@ -4,14 +4,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <script src="../node_modules/papaparse/papaparse.js"></script>
+  <script type="text/javascript" src="./index.js"></script>
 </head>
 <body>
+  <label for="csv">Choose a csv file to parse</label><br>
+  <input type="file"
+       id="csv" name="csv"
+       accept=".csv"><br><br>
   <div id="results">HTTP Request Results
-    <p id="ok-response">Ok Responses</p>
-    <p id="failed-response">Failed Responses</p>
+    <p id="ok-response">Ok Responses:</p>
+    <p id="failed-response">Failed Responses:</p>
     <ul id="bad-requests">
+      Tactic ID and URL
     </ul>
   </div>
-  <script type="text/javascript" src="./index.js"></script>
 </body>
 </html>
