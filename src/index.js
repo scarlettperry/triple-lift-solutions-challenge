@@ -1,15 +1,20 @@
+//automatically enables cross-domain requests when needed
+let proxyURL = 'https://fierce-depths-54082.herokuapp.com/'
+
 document.addEventListener('DOMContentLoaded', function () {
-  let queryString = "?tripleliftTest=true&tl_tactic_id=343664"
+  let appendOkRespones = document.getElementById('ok-response')
+
   let input = document.getElementById('csv')
   input.addEventListener("change", parseData)
 
-  //parsing uploaded file object
+  //parses uploaded file object
   function parseData(event) {
     let file = event.target.files[0]
     Papa.parse(file,{
       header: true,
       dynamticTyping: true,
       complete: function(results){
+        //calls helper function
         reformatData(results.data)
       }
     })
@@ -21,29 +26,53 @@ document.addEventListener('DOMContentLoaded', function () {
       let rObj = {}
       rObj.tactic_id = obj.tactic_id
       rObj.impression_pixel_json = obj.impression_pixel_json
-        .replace(/\\\//g, "/") //remove backslahses & replace with /
-        .replace(/['"]+/g, '') //remove extra doubles quotes
-        .replace(/^\[([\s\S]*)]$/,'$1') //remove opening and closing brackets
+        .replace(/\\\//g, "/") //removes backslahses & replace with /
+        .replace(/['"]+/g, '') //removes extra double quotes
+        .replace(/^\[([\s\S]*)]$/,'$1') //removes opening and closing brackets
       return rObj
     })
-    // fetchData(tacticAndUrl)
+    //calls helper function
+    fetchData(tacticAndUrl)
   }
 
-  //fetch calls
-  // function fetchData(data) {
-  //   data.forEach(function (dataObj) {
-  //     if (dataObj.impression_pixel_json !== "NULL" && dataObj.impression_pixel_json !== "") {
-  //       fetch(dataObj.impression_pixel_json)
-  //         .then(resp => resp.json())
-  //         .then(console.log)
-  //     }
-  //   })
-  // }
+  // fetch calls
+  function fetchData(data) {
+    let okResponses = 0
+    let failedRespones = []
 
+    data.forEach(function (dataObj) {
+      if (dataObj.impression_pixel_json !== "NULL" && dataObj.impression_pixel_json !== "") {
+        fetch(proxyURL+dataObj.impression_pixel_json)
+          .then((response) => {
+            //200-299                           //300-399
+            if (200 >=response.status<=299 && response.status < 400) {
+              okResponses++
+            } else if (response.status >= 400) {
+              failedRespones.push(dataObj)
+            }
+            else {
+              throw new Error(dataObj, 'Something went wrong');
+            }
+            okResponsesDOM(okResponses)
+            failedResponesDOM(failedRespones)
 
-  //array for good response - just counter
+          })
+          // .catch((error) => {
+          //   console.log(error)
+          // });
+          // .then(function () {
+          // })
+      }
+    })
+  }
 
-  //array for bad response - tactic id & url
+  function okResponsesDOM(count) {
+    appendOkRespones.innerText=`Ok Responses: ${count}`
+  }
+
+  function failedResponesDOM(array) {
+    console.log(array)
+  }
 
 
 
