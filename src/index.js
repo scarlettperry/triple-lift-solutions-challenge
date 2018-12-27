@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
       let rObj = {}
       rObj.tactic_id = obj.tactic_id
       rObj.impression_pixel_json = obj.impression_pixel_json
-        .replace(/\\\//g, "/") //removes backslahses & replace with /
+        .replace(/\\\//g, "/") //removes backslahses & replaces with /
         .replace(/['"]+/g, '') //removes extra double quotes
         .replace(/^\[([\s\S]*)]$/,'$1') //removes opening and closing brackets
       return rObj
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
             failedResponesDOM(failedRespones)
           })
           //
-          //freezes application so have commented it out
+          //failedRespones freezes application so I have commented it out
           // .then(()=>{
           //   failedList(failedRespones)
           // })
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   //appends count for 2XX, 3XX responses
   function okResponsesDOM(count) {
-    appendOkRespones.innerText=`Ok Responses: ${count}`
+    appendOkRespones.innerText=`OK Responses: ${count}`
   }
 
   //appends count for failed responses
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   }
 
-  //removes duplicates from array
+  //removes duplicates from array of failed respones
   function onlyUnique(value, index, self) {
       return self.indexOf(value) === index;
   }
