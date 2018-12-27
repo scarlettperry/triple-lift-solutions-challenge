@@ -3,6 +3,8 @@ let proxyURL = 'https://fierce-depths-54082.herokuapp.com/'
 
 document.addEventListener('DOMContentLoaded', function () {
   let appendOkRespones = document.getElementById('ok-response')
+  let appendFailedRespones = document.getElementById('failed-response')
+  let failedResponesList = document.getElementById('bad-requests')
 
   let input = document.getElementById('csv')
   input.addEventListener("change", parseData)
@@ -50,41 +52,51 @@ document.addEventListener('DOMContentLoaded', function () {
             } else if (response.status >= 400) {
               failedRespones.push(dataObj)
             }
-            else {
-              throw new Error(dataObj, 'Something went wrong');
-            }
             okResponsesDOM(okResponses)
             failedResponesDOM(failedRespones)
-
           })
+          //
+          //freezes application so have commented it out
+          // .then(()=>{
+          //   failedList(failedRespones)
+          // })
           // .catch((error) => {
           //   console.log(error)
-          // });
-          // .then(function () {
           // })
       }
     })
   }
 
+  //appends count for 2XX, 3XX responses
   function okResponsesDOM(count) {
     appendOkRespones.innerText=`Ok Responses: ${count}`
   }
 
+  //appends count for failed responses
   function failedResponesDOM(array) {
-    console.log(array)
+                                  //calls helper function
+    let failedCount = array.filter(onlyUnique)
+    return appendFailedRespones.innerText=`Failed Responses: ${failedCount.length}`
   }
 
+  //appends tactic id and url for failed responses
+  function failedList(array) {
+                                  //calls helper function
+    let failedArray = array.filter(onlyUnique)
+    failedArray.forEach(function (failedResponeObj) {
+      let bulletPoint = document.createElement("li")
+      bulletPoint.innerText =
+      `
+      ${failedResponeObj.tactic_id}: ${failedResponeObj.impression_pixel_json}
+      `
+      failedResponesList.append(bulletPoint)
+    })
+  }
 
-
-
-
-
-
-
-
-
-
-
+  //removes duplicates from array
+  function onlyUnique(value, index, self) {
+      return self.indexOf(value) === index;
+  }
 
 
 
