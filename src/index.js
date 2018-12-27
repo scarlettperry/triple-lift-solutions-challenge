@@ -10,35 +10,35 @@ document.addEventListener('DOMContentLoaded', function () {
       header: true,
       dynamticTyping: true,
       complete: function(results){
-        fetchData(results.data)
+        reformatData(results.data)
       }
     })
+  }
+
+  //reformats data
+  function reformatData(data) {
+    let tacticAndUrl = data.map(obj => {
+      let rObj = {}
+      rObj.tactic_id = obj.tactic_id
+      rObj.impression_pixel_json = obj.impression_pixel_json
+        .replace(/\\\//g, "/") //remove backslahses & replace with /
+        .replace(/['"]+/g, '') //remove extra doubles quotes
+        .replace(/^\[([\s\S]*)]$/,'$1') //remove opening and closing brackets
+      return rObj
+    })
+    // fetchData(tacticAndUrl)
   }
 
   //fetch calls
-  function fetchData(data) {
-    let okRespone = []
-    let failedRespone = []
-    data.forEach(function(object) {
-      //removing beg. & ending brackets & double quotes.
-      //splitting string at "," if more than one url for a tactic
-      let url = object.impression_pixel_json.replace(/^\[([\s\S]*)]$/,'$1').replace(/['"]+/g, '').split(",")
-      if (url[0] !== "" && url[0] !== "NULL") {
-        for(let element of url){
-          fetch(element)
-            .then(function() {
-              console.log("ok")
-            }).catch(function() {
-              console.log("error")
-            })
-        }
-      }
-    })
-  }
-
-
-
-  //reformating data to just have tactic id and URL
+  // function fetchData(data) {
+  //   data.forEach(function (dataObj) {
+  //     if (dataObj.impression_pixel_json !== "NULL" && dataObj.impression_pixel_json !== "") {
+  //       fetch(dataObj.impression_pixel_json)
+  //         .then(resp => resp.json())
+  //         .then(console.log)
+  //     }
+  //   })
+  // }
 
 
   //array for good response - just counter
